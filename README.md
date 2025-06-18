@@ -1,6 +1,6 @@
 # Qt Hexagonal Menu
 
-A hexagonal menu tree in Qt Framework.
+A hexagonal menu in Qt Framework.
 
 ## Build
 
