@@ -82,7 +82,7 @@ void QtHexagonalMenu::HexagonalButton::OnPaint(QPaintEvent* pEvent)
     painter.drawPolygon(mPolygon);
 
     painter.setPen(mTextColor);
-    QFont font("Arial", 16, QFont::Bold);
+    QFont font("Calibri", 14, QFont::Bold);
     painter.setFont(font);
     painter.drawText(QRectF(0, 0, width(), height()), Qt::AlignCenter, mLabel);
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HexagonalMenuWidget.h"
+#include "Menu.h"
 
 #include <QWidget>
 
@@ -16,7 +16,6 @@ namespace QtHexagonalMenu
         void mouseReleaseEvent(QMouseEvent* pEvent) override;
 
       private:
-        HexagonalMenuWidget* mHexagonalMenuWidget;
-        HexagonalMenuWidget* mHexagonalMenuWidgetChild;
+        Menu* mMenu;
     };
 }
