@@ -16,9 +16,9 @@ namespace QtHexagonalMenu
         void paintEvent(QPaintEvent* pEvent) override;
         void resizeEvent(QResizeEvent* pEvent) override;
 
-        bool OnMouseReleased(QMouseEvent* pEvent);
-        bool OnMousePressed(QMouseEvent* pEvent);
-        bool OnMouseMoved(QMouseEvent* pEvent);
+        bool OnMouseReleased(const QPointF& position);
+        bool OnMousePressed(const QPointF& position);
+        bool OnMouseMoved(const QPointF& position);
 
         void SetLabel(const QString& label);
 
@@ -34,8 +34,10 @@ namespace QtHexagonalMenu
         QString mLabel;
         QPointF mCenter;
         QPolygonF mPolygon;
-        QColor mContourColor{ 0, 0, 0 };
-        QColor mFillColor{ 255, 0, 0 };
+        QColor mTextColor{ 255, 255, 255 };
+        QColor mContourColor{ 9, 45, 71 };
+        QColor mFillColor0{ 12, 97, 175 };
+        QColor mFillColor1{ 9, 65, 97 };
 
         bool mHovered{ false };
         bool mPressed{ false };

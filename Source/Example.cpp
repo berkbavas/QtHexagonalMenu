@@ -36,11 +36,23 @@ QtHexagonalMenu::Example::Example(QWidget* pParent)
                 mHexagonalMenuWidgetChild->Show(position.x(), position.y(), animationStartingIndex);
                 //
             });
+
+    setMouseTracking(true);
+}
+
+void QtHexagonalMenu::Example::mouseMoveEvent(QMouseEvent* pEvent)
+{
+    mHexagonalMenuWidget->OnMouseMoved(mHexagonalMenuWidget->mapFromParent(pEvent->position()));
 }
 
 void QtHexagonalMenu::Example::mousePressEvent(QMouseEvent* pEvent)
 {
     mHexagonalMenuWidgetChild->Hide();
+
+    if (mHexagonalMenuWidget->OnMousePressed(mHexagonalMenuWidget->mapFromParent(pEvent->position())))
+    {
+        return;
+    }
 
     if (pEvent->button() == Qt::RightButton)
     {
@@ -50,4 +62,9 @@ void QtHexagonalMenu::Example::mousePressEvent(QMouseEvent* pEvent)
     {
         mHexagonalMenuWidget->Show(pEvent->position().x(), pEvent->position().y(), 3);
     }
+}
+
+void QtHexagonalMenu::Example::mouseReleaseEvent(QMouseEvent* pEvent)
+{
+    mHexagonalMenuWidget->OnMouseReleased(mHexagonalMenuWidget->mapFromParent(pEvent->position()));
 }

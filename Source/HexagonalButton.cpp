@@ -9,6 +9,7 @@
 QtHexagonalMenu::HexagonalButton::HexagonalButton(QWidget* pParent)
     : QWidget(pParent)
 {
+    setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
 void QtHexagonalMenu::HexagonalButton::paintEvent(QPaintEvent* pEvent)
@@ -21,17 +22,17 @@ void QtHexagonalMenu::HexagonalButton::resizeEvent(QResizeEvent* pEvent)
     OnResize(pEvent);
 }
 
-bool QtHexagonalMenu::HexagonalButton::OnMouseReleased(QMouseEvent* pEvent)
+bool QtHexagonalMenu::HexagonalButton::OnMouseReleased(const QPointF& position)
 {
     mPressed = false;
     update();
 
-    return ContainsPointFromParent(pEvent->position());
+    return ContainsPointFromParent(position);
 }
 
-bool QtHexagonalMenu::HexagonalButton::OnMousePressed(QMouseEvent* pEvent)
+bool QtHexagonalMenu::HexagonalButton::OnMousePressed(const QPointF& position)
 {
-    mPressed = ContainsPointFromParent(pEvent->position());
+    mPressed = ContainsPointFromParent(position);
     update();
 
     if (mPressed)
@@ -42,9 +43,9 @@ bool QtHexagonalMenu::HexagonalButton::OnMousePressed(QMouseEvent* pEvent)
     return mPressed;
 }
 
-bool QtHexagonalMenu::HexagonalButton::OnMouseMoved(QMouseEvent* pEvent)
+bool QtHexagonalMenu::HexagonalButton::OnMouseMoved(const QPointF& position)
 {
-    mHovered = ContainsPointFromParent(pEvent->position());
+    mHovered = ContainsPointFromParent(position);
     update();
 
     return mHovered;
@@ -57,12 +58,30 @@ void QtHexagonalMenu::HexagonalButton::SetLabel(const QString& label)
 
 void QtHexagonalMenu::HexagonalButton::OnPaint(QPaintEvent* pEvent)
 {
+    const auto& w = width();
+    const auto& h = height();
+
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
-    painter.setBrush(mHovered ? mFillColor.darker() : mFillColor);
-    painter.setPen(QPen(mContourColor, 2));
+    QLinearGradient gradient(0.5f * w, 0, 0.5f * w, h);
+
+    if (mHovered)
+    {
+        gradient.setColorAt(0.0, mFillColor0.darker());
+        gradient.setColorAt(1.0, mFillColor1.darker());
+    }
+    else
+    {
+        gradient.setColorAt(0.0, mFillColor0);
+        gradient.setColorAt(1.0, mFillColor1);
+    }
+
+    painter.setBrush(gradient);
+    painter.setPen(QPen(mContourColor, 1));
     painter.drawPolygon(mPolygon);
+
+    painter.setPen(mTextColor);
     QFont font("Arial", 16, QFont::Bold);
     painter.setFont(font);
     painter.drawText(QRectF(0, 0, width(), height()), Qt::AlignCenter, mLabel);

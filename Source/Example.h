@@ -11,7 +11,9 @@ namespace QtHexagonalMenu
       public:
         explicit Example(QWidget* pParent = nullptr);
 
+        void mouseMoveEvent(QMouseEvent* pEvent) override;
         void mousePressEvent(QMouseEvent* pEvent) override;
+        void mouseReleaseEvent(QMouseEvent* pEvent) override;
 
       private:
         HexagonalMenuWidget* mHexagonalMenuWidget;

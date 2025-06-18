@@ -15,16 +15,12 @@ namespace QtHexagonalMenu
       public:
         explicit HexagonalMenuWidget(QWidget* pParent);
 
-        void mousePressEvent(QMouseEvent* pEvent) override;
-        void mouseMoveEvent(QMouseEvent* pEvent) override;
-        void mouseReleaseEvent(QMouseEvent* pEvent) override;
-
         void Show(int x, int y, int animationStartingIndex);
         void Hide();
 
-        void OnMouseReleased(QMouseEvent* pEvent);
-        void OnMousePressed(QMouseEvent* pEvent);
-        void OnMouseMoved(QMouseEvent* pEvent);
+        bool OnMouseReleased(const QPointF& position);
+        bool OnMousePressed(const QPointF& position);
+        bool OnMouseMoved(const QPointF& position);
 
         void AddButton(int index, const QString& name);
 

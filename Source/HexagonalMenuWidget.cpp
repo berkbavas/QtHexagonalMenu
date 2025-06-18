@@ -6,8 +6,7 @@ QtHexagonalMenu::HexagonalMenuWidget::HexagonalMenuWidget(QWidget* pParent)
     : QWidget(pParent)
     , mParent(pParent)
 {
-    setMouseTracking(true);
-
+    setAttribute(Qt::WA_TransparentForMouseEvents);
     connect(&mTimer, &QTimer::timeout, this, &HexagonalMenuWidget::Update);
 }
 
@@ -31,49 +30,55 @@ void QtHexagonalMenu::HexagonalMenuWidget::Hide()
 {
     setVisible(false);
 
-    for (const auto& [index, button] : mButtons)
+    for (const auto& [index, pButton] : mButtons)
     {
-        button->setVisible(false);
+        pButton->setVisible(false);
     }
 }
 
-void QtHexagonalMenu::HexagonalMenuWidget::mousePressEvent(QMouseEvent* pEvent)
+bool QtHexagonalMenu::HexagonalMenuWidget::OnMouseReleased(const QPointF& position)
 {
-    OnMousePressed(pEvent);
-}
+    bool consumed = false;
 
-void QtHexagonalMenu::HexagonalMenuWidget::mouseMoveEvent(QMouseEvent* pEvent)
-{
-    OnMouseMoved(pEvent);
-}
-
-void QtHexagonalMenu::HexagonalMenuWidget::mouseReleaseEvent(QMouseEvent* pEvent)
-{
-    OnMouseReleased(pEvent);
-}
-
-void QtHexagonalMenu::HexagonalMenuWidget::OnMouseReleased(QMouseEvent* pEvent)
-{
-    for (const auto& [index, button] : mButtons)
+    for (const auto& [index, pButton] : mButtons)
     {
-        button->OnMouseReleased(pEvent);
+        if (pButton->OnMouseReleased(position))
+        {
+            consumed = true;
+        }
     }
+
+    return consumed;
 }
 
-void QtHexagonalMenu::HexagonalMenuWidget::OnMousePressed(QMouseEvent* pEvent)
+bool QtHexagonalMenu::HexagonalMenuWidget::OnMousePressed(const QPointF& position)
 {
-    for (const auto& [index, button] : mButtons)
+    bool consumed = false;
+
+    for (const auto& [index, pButton] : mButtons)
     {
-        button->OnMousePressed(pEvent);
+        if (pButton->OnMousePressed(position))
+        {
+            consumed = true;
+        }
     }
+
+    return consumed;
 }
 
-void QtHexagonalMenu::HexagonalMenuWidget::OnMouseMoved(QMouseEvent* pEvent)
+bool QtHexagonalMenu::HexagonalMenuWidget::OnMouseMoved(const QPointF& position)
 {
-    for (const auto& [index, button] : mButtons)
+    bool consumed = false;
+
+    for (const auto& [index, pButton] : mButtons)
     {
-        button->OnMouseMoved(pEvent);
+        if (pButton->OnMouseMoved(position))
+        {
+            consumed = true;
+        }
     }
+
+    return consumed;
 }
 
 void QtHexagonalMenu::HexagonalMenuWidget::AddButton(int index, const QString& name)
@@ -82,7 +87,6 @@ void QtHexagonalMenu::HexagonalMenuWidget::AddButton(int index, const QString& n
 
     const auto pButton = new HexagonalButton(this);
     pButton->setVisible(false);
-    pButton->setAttribute(Qt::WA_TransparentForMouseEvents);
     pButton->SetLabel(name);
 
     connect(pButton, &HexagonalButton::MousePressed, this, [this, index]()
@@ -116,7 +120,7 @@ void QtHexagonalMenu::HexagonalMenuWidget::Update()
     float cx = 0.5f * w;
     float cy = 0.5f * h;
 
-    for (const auto& [index, button] : mButtons)
+    for (const auto& [index, pButton] : mButtons)
     {
         float angle;
 
@@ -126,8 +130,8 @@ void QtHexagonalMenu::HexagonalMenuWidget::Update()
         const float rh = 0.3f * h;
         const float pw = w / 3.0f;
         const float ph = h / 3.0f;
-        button->setFixedSize(pw, ph);
-        button->move(cx + rw * std::cos(-angle) - 0.5f * pw, cy + rh * std::sin(-angle) - 0.5f * ph);
-        button->setVisible(true);
+        pButton->setFixedSize(pw, ph);
+        pButton->move(cx + rw * std::cos(-angle) - 0.5f * pw, cy + rh * std::sin(-angle) - 0.5f * ph);
+        pButton->setVisible(true);
     }
 }
