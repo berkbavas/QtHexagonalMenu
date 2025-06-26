@@ -12,9 +12,9 @@ class Submenu : public QObject
     Q_OBJECT
 
   public:
-    explicit Submenu(QWidget* pParent);
+    explicit Submenu(QWidget* pParent, int index);
 
-    void Show(int x, int y, int animationStartingIndex);
+    void Show(int x, int y);
     void Hide();
 
     bool OnMouseReleased(const QPointF& point);

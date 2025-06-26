@@ -11,9 +11,9 @@ class HexagonalMenuWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit HexagonalMenuWidget(QWidget* pParent);
+    explicit HexagonalMenuWidget(QWidget* pParent, int index);
 
-    void Show(int x, int y, int animationStartingIndex);
+    void Show(int x, int y);
     void Hide();
 
     bool OnMouseReleased(const QPointF& point);

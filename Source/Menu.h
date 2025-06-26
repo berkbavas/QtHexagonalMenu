@@ -10,7 +10,7 @@ class Menu : public QObject
   public:
     explicit Menu(QWidget* pParent);
 
-    void Show(int x, int y, int animationStartingIndex);
+    void Show(int x, int y);
     void Hide();
 
     bool OnMouseReleased(const QPointF& point);

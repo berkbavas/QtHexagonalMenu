@@ -2,19 +2,19 @@
 
 #include <QWidget>
 
-Submenu::Submenu(QWidget* pParent)
+Submenu::Submenu(QWidget* pParent, int index)
     : QObject(pParent)
     , mParent(pParent)
 {
-    mHexagonalMenuWidget = new HexagonalMenuWidget(mParent);
+    mHexagonalMenuWidget = new HexagonalMenuWidget(mParent, index);
     mHexagonalMenuWidget->setFixedSize(400, 400);
     mHexagonalMenuWidget->setVisible(false);
     connect(mHexagonalMenuWidget, &HexagonalMenuWidget::ButtonClicked, this, &Submenu::HandleButtonClick);
 }
 
-void Submenu::Show(int x, int y, int animationStartingIndex)
+void Submenu::Show(int x, int y)
 {
-    mHexagonalMenuWidget->Show(x, y, animationStartingIndex);
+    mHexagonalMenuWidget->Show(x, y);
 }
 
 void Submenu::SetChildLevel(int level)
@@ -131,10 +131,10 @@ void Submenu::ShowChild(int index)
 
     const auto pChild = mSubmenus[index];
     const auto center = mHexagonalMenuWidget->GetCenter();
-    const auto angle = M_PI / 6.0f + +index * M_PI / 3.0f;
+    const auto angle = M_PI / 6.0f + index * M_PI / 3.0f;
     const auto r = 0.6f * mHexagonalMenuWidget->width();
     const auto animationStartingIndex = (index + 3) % 6;
     const auto position = center + r * QPointF(std::cos(-angle), std::sin(-angle));
 
-    pChild->Show(position.x(), position.y(), animationStartingIndex);
+    pChild->Show(position.x(), position.y());
 }

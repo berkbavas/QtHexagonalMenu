@@ -2,22 +2,22 @@
 
 #include <cassert>
 
-HexagonalMenuWidget::HexagonalMenuWidget(QWidget* pParent)
+HexagonalMenuWidget::HexagonalMenuWidget(QWidget* pParent, int index)
     : QWidget(pParent)
     , mParent(pParent)
 {
+    mAnimationStartingIndex = (index + 3) % 6;
     setAttribute(Qt::WA_TransparentForMouseEvents);
     connect(&mTimer, &QTimer::timeout, this, &HexagonalMenuWidget::Update);
 }
 
-void HexagonalMenuWidget::Show(int x, int y, int animationStartingIndex)
+void HexagonalMenuWidget::Show(int x, int y)
 {
     float w = width();
     float h = height();
     float cx = 0.5f * w;
     float cy = 0.5f * h;
 
-    mAnimationStartingIndex = animationStartingIndex;
     mAnimationVariable = 0.0f;
 
     move(x - cx, y - cy);
@@ -122,13 +122,28 @@ void HexagonalMenuWidget::Update()
     for (const auto& [index, pButton] : mButtons)
     {
         float angle;
+        float rw;
+        float rh;
+        float pw;
+        float ph;
 
-        angle = M_PI / 6.0f + mAnimationVariable * (index - mAnimationStartingIndex) * M_PI / 3.0f + mAnimationStartingIndex * M_PI / 3.0f;
+        if (mChildLevel == 0)
+        {
+            angle = M_PI / 6.0f + (index - mAnimationStartingIndex) * M_PI / 3.0f + mAnimationStartingIndex * M_PI / 3.0f;
+            rw = mAnimationVariable * 0.3f * w;
+            rh = mAnimationVariable * 0.3f * h;
+            pw = (w / 3.0f);
+            ph = (h / 3.0f);
+        }
+        else
+        {
+            angle = M_PI / 6.0f + mAnimationVariable * (index - mAnimationStartingIndex) * M_PI / 3.0f + mAnimationStartingIndex * M_PI / 3.0f;
+            rw = 0.3f * w;
+            rh = 0.3f * h;
+            pw = (w / 3.0f);
+            ph = (h / 3.0f);
+        }
 
-        const float rw = 0.3f * w;
-        const float rh = 0.3f * h;
-        const float pw = w / 3.0f;
-        const float ph = h / 3.0f;
         pButton->MakeDarker(mChildLevel);
         pButton->setFixedSize(pw, ph);
         pButton->move(cx + rw * std::cos(-angle) - 0.5f * pw, cy + rh * std::sin(-angle) - 0.5f * ph);

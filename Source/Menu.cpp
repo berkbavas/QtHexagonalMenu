@@ -4,7 +4,7 @@ Menu::Menu(QWidget* pParent)
     : QObject(pParent)
     , mParent(pParent)
 {
-    mMainMenu = new Submenu(mParent);
+    mMainMenu = new Submenu(mParent, 3);
     mMainMenu->AddButton(0, "Test 0");
     mMainMenu->AddButton(1, "Test 1");
     mMainMenu->AddButton(2, "Test 2");
@@ -12,14 +12,14 @@ Menu::Menu(QWidget* pParent)
     mMainMenu->AddButton(4, "Test 4");
     mMainMenu->AddButton(5, "Test 5");
 
-    Submenu* pSubmenu0 = new Submenu(mParent);
+    Submenu* pSubmenu0 = new Submenu(mParent, 0);
     pSubmenu0->AddButton(0, "Test 00");
     pSubmenu0->AddButton(1, "Test 01");
     pSubmenu0->AddButton(2, "Test 02");
     pSubmenu0->AddButton(4, "Test 04");
     pSubmenu0->AddButton(5, "Test 05");
 
-    Submenu* pSubmenu05 = new Submenu(mParent);
+    Submenu* pSubmenu05 = new Submenu(mParent, 5);
     pSubmenu05->AddButton(0, "Test 050");
     pSubmenu05->AddButton(1, "Test 051");
     pSubmenu05->AddButton(3, "Test 053");
@@ -28,21 +28,21 @@ Menu::Menu(QWidget* pParent)
 
     pSubmenu0->AddSubmenu(5, pSubmenu05);
 
-    Submenu* pSubmenu1 = new Submenu(mParent);
+    Submenu* pSubmenu1 = new Submenu(mParent, 1);
     pSubmenu1->AddButton(0, "Test 10");
     pSubmenu1->AddButton(1, "Test 11");
     pSubmenu1->AddButton(2, "Test 12");
     pSubmenu1->AddButton(3, "Test 13");
     pSubmenu1->AddButton(5, "Test 15");
 
-    Submenu* pSubmenu2 = new Submenu(mParent);
+    Submenu* pSubmenu2 = new Submenu(mParent, 2);
     pSubmenu2->AddButton(0, "Test 20");
     pSubmenu2->AddButton(1, "Test 21");
     pSubmenu2->AddButton(2, "Test 22");
     pSubmenu2->AddButton(3, "Test 23");
     pSubmenu2->AddButton(4, "Test 24");
 
-    Submenu* pSubmenu3 = new Submenu(mParent);
+    Submenu* pSubmenu3 = new Submenu(mParent, 3);
     pSubmenu3->AddButton(1, "Test 31");
     pSubmenu3->AddButton(2, "Test 32");
     pSubmenu3->AddButton(3, "Test 33");
@@ -59,9 +59,9 @@ Menu::Menu(QWidget* pParent)
     mMainMenu->SetChildLevel(0);
 }
 
-void Menu::Show(int x, int y, int animationStartingIndex)
+void Menu::Show(int x, int y)
 {
-    mMainMenu->Show(x, y, animationStartingIndex);
+    mMainMenu->Show(x, y);
 }
 
 void Menu::Hide()

@@ -20,7 +20,7 @@ void Example::mousePressEvent(QMouseEvent* pEvent)
     if (!mMenu->OnMousePressed(pEvent->position()))
     {
         mMenu->Hide();
-        mMenu->Show(pEvent->position().x(), pEvent->position().y(), 0);
+        mMenu->Show(pEvent->position().x(), pEvent->position().y());
     }
 }
 
