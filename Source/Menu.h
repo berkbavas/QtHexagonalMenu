@@ -1,36 +1,23 @@
 #pragma once
 
-#include "HexagonalMenuWidget.h"
+#include "Submenu.h"
 
 #include <QObject>
 
-namespace QtHexagonalMenu
+class Menu : public QObject
 {
-    class Menu;
+    Q_OBJECT
+  public:
+    explicit Menu(QWidget* pParent);
 
-    class Menu : QObject
-    {
-        Q_OBJECT
-      public:
-        explicit Menu(QWidget* pParent, const QString& name);
+    void Show(int x, int y, int animationStartingIndex);
+    void Hide();
 
-        bool OnMouseReleased(const QPointF& position);
-        bool OnMousePressed(const QPointF& position);
-        bool OnMouseMoved(const QPointF& position);
+    bool OnMouseReleased(const QPointF& point);
+    bool OnMousePressed(const QPointF& point);
+    bool OnMouseMoved(const QPointF& point);
 
-        void Hide();
-        void AddChildren(const std::map<int, Menu*>& children);
-        const QString& GetName() const;
-
-        HexagonalMenuWidget* GetWidget() const;
-
-      private slots:
-        void ShowChild(int index);
-
-      private:
-        QWidget* mParent;
-        QString mName;
-        HexagonalMenuWidget* mHexagonalMenuWidget{ nullptr };
-        std::map<int, Menu*> mChildren;
-    };
-}
+  private:
+    QWidget* mParent;
+    Submenu* mMainMenu;
+};

@@ -6,95 +6,105 @@
 #include <QPainterPath>
 #include <QResizeEvent>
 
-QtHexagonalMenu::HexagonalButton::HexagonalButton(QWidget* pParent)
+HexagonalButton::HexagonalButton(QWidget* pParent)
     : QWidget(pParent)
 {
     setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
-void QtHexagonalMenu::HexagonalButton::paintEvent(QPaintEvent* pEvent)
+void HexagonalButton::paintEvent(QPaintEvent* pEvent)
 {
     OnPaint(pEvent);
 }
 
-void QtHexagonalMenu::HexagonalButton::resizeEvent(QResizeEvent* pEvent)
+void HexagonalButton::resizeEvent(QResizeEvent* pEvent)
 {
     OnResize(pEvent);
 }
 
-bool QtHexagonalMenu::HexagonalButton::OnMouseReleased(const QPointF& position)
+bool HexagonalButton::OnMouseReleased(const QPointF& point)
 {
+    if (!isVisible())
+    {
+        return false;
+    }
+
     mPressed = false;
     update();
 
-    return ContainsPointFromParent(position);
+    return ContainsPoint(point);
 }
 
-bool QtHexagonalMenu::HexagonalButton::OnMousePressed(const QPointF& position)
+bool HexagonalButton::OnMousePressed(const QPointF& point)
 {
-    mPressed = ContainsPointFromParent(position);
+    if (!isVisible())
+    {
+        return false;
+    }
+
+    mPressed = ContainsPoint(point);
     update();
 
     if (mPressed)
     {
-        emit MousePressed();
+        emit Clicked();
     }
 
     return mPressed;
 }
 
-bool QtHexagonalMenu::HexagonalButton::OnMouseMoved(const QPointF& position)
+bool HexagonalButton::OnMouseMoved(const QPointF& point)
 {
-    mHovered = ContainsPointFromParent(position);
+    if (!isVisible())
+    {
+        return false;
+    }
+
+    mHovered = ContainsPoint(point);
     update();
 
     return mHovered;
 }
 
-void QtHexagonalMenu::HexagonalButton::SetLabel(const QString& label)
+void HexagonalButton::SetLabel(const QString& label)
 {
     mLabel = label;
 }
 
-void QtHexagonalMenu::HexagonalButton::OnPaint(QPaintEvent* pEvent)
+void HexagonalButton::MakeDarker(int factor)
 {
-    const auto& w = width();
-    const auto& h = height();
+    mDarkFactor = factor;
+}
+
+void HexagonalButton::OnPaint(QPaintEvent* pEvent)
+{
+    const auto w = width();
+    const auto h = height();
 
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
-    QLinearGradient gradient(0.5f * w, 0, 0.5f * w, h);
+    QColor fillColor = mHovered ? mFillColor.darker() : mFillColor;
 
-    if (mHovered)
-    {
-        gradient.setColorAt(0.0, mFillColor0.darker());
-        gradient.setColorAt(1.0, mFillColor1.darker());
-    }
-    else
-    {
-        gradient.setColorAt(0.0, mFillColor0);
-        gradient.setColorAt(1.0, mFillColor1);
-    }
-
-    painter.setBrush(gradient);
-    painter.setPen(QPen(mContourColor, 1));
+    fillColor.setAlpha(128 + 64 * mDarkFactor);
+    painter.setBrush(fillColor);
+    painter.setPen(QPen(mContourColor, 2));
     painter.drawPolygon(mPolygon);
 
     painter.setPen(mTextColor);
-    QFont font("Calibri", 14, QFont::Bold);
+    QFont font("Arial", 14, QFont::Bold);
     painter.setFont(font);
     painter.drawText(QRectF(0, 0, width(), height()), Qt::AlignCenter, mLabel);
 }
 
-void QtHexagonalMenu::HexagonalButton::OnResize(QResizeEvent* pEvent)
+void HexagonalButton::OnResize(QResizeEvent* pEvent)
 {
-    float w = pEvent->size().width();
-    float h = pEvent->size().height();
-    float x = 0.5f * w;
-    float y = 0.5f * h;
-    float pw = SCALING * w;
-    float ph = std::sqrt(3) / 2.0f * pw;
+    const float w = pEvent->size().width();
+    const float h = pEvent->size().height();
+    const float x = 0.5f * w;
+    const float y = 0.5f * h;
+    const float pw = SCALING * w;
+    const float ph = std::sqrt(3) / 2.0f * pw;
     mCenter = QPointF(x, y);
 
     const auto v0 = QPointF(x + 0.50f * pw, y);
@@ -108,7 +118,7 @@ void QtHexagonalMenu::HexagonalButton::OnResize(QResizeEvent* pEvent)
     mPolygon.append({ v0, v1, v2, v3, v4, v5 });
 }
 
-bool QtHexagonalMenu::HexagonalButton::ContainsPointFromParent(const QPointF& point)
+bool HexagonalButton::ContainsPoint(const QPointF& point)
 {
     return mPolygon.containsPoint(mapFromParent(point), Qt::FillRule::WindingFill);
 }

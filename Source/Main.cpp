@@ -5,7 +5,7 @@
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
-    QtHexagonalMenu::Example* pExample = new QtHexagonalMenu::Example;
+    Example* pExample = new Example;
     pExample->showNormal();
 
     return app.exec();

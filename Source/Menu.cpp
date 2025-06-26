@@ -1,146 +1,85 @@
 #include "Menu.h"
 
-QtHexagonalMenu::Menu::Menu(QWidget* pParent, const QString& name)
+Menu::Menu(QWidget* pParent)
     : QObject(pParent)
     , mParent(pParent)
-    , mName(name)
 {
+    mMainMenu = new Submenu(mParent);
+    mMainMenu->AddButton(0, "Test 0");
+    mMainMenu->AddButton(1, "Test 1");
+    mMainMenu->AddButton(2, "Test 2");
+    mMainMenu->AddButton(3, "Test 3");
+    mMainMenu->AddButton(4, "Test 4");
+    mMainMenu->AddButton(5, "Test 5");
+
+    Submenu* pSubmenu0 = new Submenu(mParent);
+    pSubmenu0->AddButton(0, "Test 00");
+    pSubmenu0->AddButton(1, "Test 01");
+    pSubmenu0->AddButton(2, "Test 02");
+    pSubmenu0->AddButton(4, "Test 04");
+    pSubmenu0->AddButton(5, "Test 05");
+
+    Submenu* pSubmenu05 = new Submenu(mParent);
+    pSubmenu05->AddButton(0, "Test 050");
+    pSubmenu05->AddButton(1, "Test 051");
+    pSubmenu05->AddButton(3, "Test 053");
+    pSubmenu05->AddButton(4, "Test 054");
+    pSubmenu05->AddButton(5, "Test 055");
+
+    pSubmenu0->AddSubmenu(5, pSubmenu05);
+
+    Submenu* pSubmenu1 = new Submenu(mParent);
+    pSubmenu1->AddButton(0, "Test 10");
+    pSubmenu1->AddButton(1, "Test 11");
+    pSubmenu1->AddButton(2, "Test 12");
+    pSubmenu1->AddButton(3, "Test 13");
+    pSubmenu1->AddButton(5, "Test 15");
+
+    Submenu* pSubmenu2 = new Submenu(mParent);
+    pSubmenu2->AddButton(0, "Test 20");
+    pSubmenu2->AddButton(1, "Test 21");
+    pSubmenu2->AddButton(2, "Test 22");
+    pSubmenu2->AddButton(3, "Test 23");
+    pSubmenu2->AddButton(4, "Test 24");
+
+    Submenu* pSubmenu3 = new Submenu(mParent);
+    pSubmenu3->AddButton(1, "Test 31");
+    pSubmenu3->AddButton(2, "Test 32");
+    pSubmenu3->AddButton(3, "Test 33");
+    pSubmenu3->AddButton(4, "Test 34");
+    pSubmenu3->AddButton(5, "Test 35");
+
+    mMainMenu->AddSubmenu(0, pSubmenu0);
+    mMainMenu->AddSubmenu(1, pSubmenu1);
+    mMainMenu->AddSubmenu(2, pSubmenu2);
+    mMainMenu->AddSubmenu(3, pSubmenu3);
+
+    connect(mMainMenu, &Submenu::RequestHide, this, &Menu::Hide);
+
+    mMainMenu->SetChildLevel(0);
 }
 
-bool QtHexagonalMenu::Menu::OnMouseReleased(const QPointF& position)
+void Menu::Show(int x, int y, int animationStartingIndex)
 {
-    if (!mHexagonalMenuWidget)
-    {
-        return false;
-    }
-
-    if (mHexagonalMenuWidget->isVisible())
-    {
-        mHexagonalMenuWidget->OnMouseReleased(mHexagonalMenuWidget->mapFromParent(position));
-    }
-
-    for (const auto& [index, pChild] : mChildren)
-    {
-        pChild->OnMouseReleased(position);
-    }
-
-    return false;
+    mMainMenu->Show(x, y, animationStartingIndex);
 }
 
-bool QtHexagonalMenu::Menu::OnMousePressed(const QPointF& position)
+void Menu::Hide()
 {
-    if (!mHexagonalMenuWidget)
-    {
-        return false;
-    }
-
-    bool consumed = false;
-
-    if (mHexagonalMenuWidget->isVisible())
-    {
-        consumed = mHexagonalMenuWidget->OnMousePressed(mHexagonalMenuWidget->mapFromParent(position));
-    }
-
-    if (!consumed)
-    {
-        for (const auto& [index, pChild] : mChildren)
-        {
-            if (pChild->OnMousePressed(position))
-            {
-                consumed = true;
-            }
-        }
-    }
-
-    return consumed;
+    mMainMenu->Hide();
 }
 
-bool QtHexagonalMenu::Menu::OnMouseMoved(const QPointF& position)
+bool Menu::OnMouseReleased(const QPointF& point)
 {
-    if (!mHexagonalMenuWidget)
-    {
-        return false;
-    }
-
-    bool consumed = false;
-
-    if (mHexagonalMenuWidget->isVisible())
-    {
-        consumed = mHexagonalMenuWidget->OnMouseMoved(mHexagonalMenuWidget->mapFromParent(position));
-    }
-
-    if (!consumed)
-    {
-        for (const auto& [index, pChild] : mChildren)
-        {
-            if (pChild->OnMouseMoved(position))
-            {
-                consumed = true;
-            }
-        }
-    }
-
-    return consumed;
+    return mMainMenu->OnMouseReleased(point);
 }
 
-void QtHexagonalMenu::Menu::AddChildren(const std::map<int, Menu*>& children)
+bool Menu::OnMousePressed(const QPointF& point)
 {
-    assert(mChildren.empty());
-
-    mChildren = children;
-
-    mHexagonalMenuWidget = new HexagonalMenuWidget(mParent);
-    mHexagonalMenuWidget->setFixedSize(300, 300);
-    mHexagonalMenuWidget->setVisible(false);
-
-    for (const auto& [index, pMenu] : mChildren)
-    {
-        mHexagonalMenuWidget->AddButton(index, pMenu->GetName());
-    }
-
-    connect(mHexagonalMenuWidget, &HexagonalMenuWidget::ButtonClicked, this, [=](int index)
-            { ShowChild(index); });
+    return mMainMenu->OnMousePressed(point);
 }
 
-void QtHexagonalMenu::Menu::Hide()
+bool Menu::OnMouseMoved(const QPointF& point)
 {
-    if (mHexagonalMenuWidget)
-    {
-        mHexagonalMenuWidget->Hide();
-    }
-
-    for (const auto& [index, pMenu] : mChildren)
-    {
-        pMenu->Hide();
-    }
-}
-
-const QString& QtHexagonalMenu::Menu::GetName() const
-{
-    return mName;
-}
-
-QtHexagonalMenu::HexagonalMenuWidget* QtHexagonalMenu::Menu::GetWidget() const
-{
-    return mHexagonalMenuWidget;
-}
-
-void QtHexagonalMenu::Menu::ShowChild(int index)
-{
-    for (const auto& [index, pMenu] : mChildren)
-    {
-        pMenu->Hide();
-    }
-
-    const auto* pChild = mChildren[index];
-    const auto center = mHexagonalMenuWidget->GetCenter();
-    const auto angle = M_PI / 6.0f + +index * M_PI / 3.0f;
-    const auto r = 0.9f * mHexagonalMenuWidget->width();
-    const auto animationStartingIndex = (index + 3) % 6;
-    const auto position = center + r * QPointF(std::cos(-angle), std::sin(-angle));
-
-    if (auto* pWidget = pChild->GetWidget())
-    {
-        pWidget->Show(position.x(), position.y(), animationStartingIndex);
-    }
+    return mMainMenu->OnMouseMoved(point);
 }

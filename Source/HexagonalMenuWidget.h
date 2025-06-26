@@ -7,35 +7,34 @@
 #include <QTimer>
 #include <QWidget>
 
-namespace QtHexagonalMenu
+class HexagonalMenuWidget : public QWidget
 {
-    class HexagonalMenuWidget : public QWidget
-    {
-        Q_OBJECT
-      public:
-        explicit HexagonalMenuWidget(QWidget* pParent);
+    Q_OBJECT
+  public:
+    explicit HexagonalMenuWidget(QWidget* pParent);
 
-        void Show(int x, int y, int animationStartingIndex);
-        void Hide();
+    void Show(int x, int y, int animationStartingIndex);
+    void Hide();
 
-        bool OnMouseReleased(const QPointF& position);
-        bool OnMousePressed(const QPointF& position);
-        bool OnMouseMoved(const QPointF& position);
+    bool OnMouseReleased(const QPointF& point);
+    bool OnMousePressed(const QPointF& point);
+    bool OnMouseMoved(const QPointF& point);
 
-        void AddButton(int index, const QString& name);
+    void AddButton(int index, const QString& name);
+    QPointF GetCenter() const;
 
-        QPointF GetCenter() const;
+    void SetChildLevel(int level);
 
-      signals:
-        void ButtonClicked(int index);
+  signals:
+    void ButtonClicked(int index);
 
-      private:
-        void Update();
+  private:
+    void Update();
 
-        QWidget* mParent{ nullptr };
-        std::map<int, HexagonalButton*> mButtons;
-        QTimer mTimer;
-        int mAnimationStartingIndex;
-        float mAnimationVariable{ 0.0f }; // [0,1]
-    };
-}
+    QWidget* mParent{ nullptr };
+    std::map<int, HexagonalButton*> mButtons;
+    QTimer mTimer;
+    int mAnimationStartingIndex;
+    float mAnimationVariable{ 0.0f }; // [0,1]
+    int mChildLevel{ 0 };
+};

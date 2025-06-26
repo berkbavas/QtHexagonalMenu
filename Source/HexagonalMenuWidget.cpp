@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-QtHexagonalMenu::HexagonalMenuWidget::HexagonalMenuWidget(QWidget* pParent)
+HexagonalMenuWidget::HexagonalMenuWidget(QWidget* pParent)
     : QWidget(pParent)
     , mParent(pParent)
 {
@@ -10,7 +10,7 @@ QtHexagonalMenu::HexagonalMenuWidget::HexagonalMenuWidget(QWidget* pParent)
     connect(&mTimer, &QTimer::timeout, this, &HexagonalMenuWidget::Update);
 }
 
-void QtHexagonalMenu::HexagonalMenuWidget::Show(int x, int y, int animationStartingIndex)
+void HexagonalMenuWidget::Show(int x, int y, int animationStartingIndex)
 {
     float w = width();
     float h = height();
@@ -19,14 +19,14 @@ void QtHexagonalMenu::HexagonalMenuWidget::Show(int x, int y, int animationStart
 
     mAnimationStartingIndex = animationStartingIndex;
     mAnimationVariable = 0.0f;
-    Update();
+
     move(x - cx, y - cy);
     setVisible(true);
 
     mTimer.start(10);
 }
 
-void QtHexagonalMenu::HexagonalMenuWidget::Hide()
+void HexagonalMenuWidget::Hide()
 {
     setVisible(false);
 
@@ -36,52 +36,46 @@ void QtHexagonalMenu::HexagonalMenuWidget::Hide()
     }
 }
 
-bool QtHexagonalMenu::HexagonalMenuWidget::OnMouseReleased(const QPointF& position)
+bool HexagonalMenuWidget::OnMouseReleased(const QPointF& point)
 {
-    bool consumed = false;
-
     for (const auto& [index, pButton] : mButtons)
     {
-        if (pButton->OnMouseReleased(position))
+        if (pButton->OnMouseReleased(mapFromParent(point)))
         {
-            consumed = true;
+            return true;
         }
     }
 
-    return consumed;
+    return false;
 }
 
-bool QtHexagonalMenu::HexagonalMenuWidget::OnMousePressed(const QPointF& position)
+bool HexagonalMenuWidget::OnMousePressed(const QPointF& point)
 {
-    bool consumed = false;
-
     for (const auto& [index, pButton] : mButtons)
     {
-        if (pButton->OnMousePressed(position))
+        if (pButton->OnMousePressed(mapFromParent(point)))
         {
-            consumed = true;
+            return true;
         }
     }
 
-    return consumed;
+    return false;
 }
 
-bool QtHexagonalMenu::HexagonalMenuWidget::OnMouseMoved(const QPointF& position)
+bool HexagonalMenuWidget::OnMouseMoved(const QPointF& point)
 {
-    bool consumed = false;
-
     for (const auto& [index, pButton] : mButtons)
     {
-        if (pButton->OnMouseMoved(position))
+        if (pButton->OnMouseMoved(mapFromParent(point)))
         {
-            consumed = true;
+            return true;
         }
     }
 
-    return consumed;
+    return false;
 }
 
-void QtHexagonalMenu::HexagonalMenuWidget::AddButton(int index, const QString& name)
+void HexagonalMenuWidget::AddButton(int index, const QString& name)
 {
     assert(mButtons[index] == nullptr);
 
@@ -89,13 +83,13 @@ void QtHexagonalMenu::HexagonalMenuWidget::AddButton(int index, const QString& n
     pButton->setVisible(false);
     pButton->SetLabel(name);
 
-    connect(pButton, &HexagonalButton::MousePressed, this, [this, index]()
+    connect(pButton, &HexagonalButton::Clicked, this, [this, index]()
             { emit ButtonClicked(index); });
 
     mButtons[index] = pButton;
 }
 
-QPointF QtHexagonalMenu::HexagonalMenuWidget::GetCenter() const
+QPointF HexagonalMenuWidget::GetCenter() const
 {
     float w = width();
     float h = height();
@@ -105,9 +99,14 @@ QPointF QtHexagonalMenu::HexagonalMenuWidget::GetCenter() const
     return mapToParent(QPoint(cx, cy));
 }
 
-void QtHexagonalMenu::HexagonalMenuWidget::Update()
+void HexagonalMenuWidget::SetChildLevel(int level)
 {
-    mAnimationVariable += 0.025f;
+    mChildLevel = level;
+}
+
+void HexagonalMenuWidget::Update()
+{
+    mAnimationVariable += 0.035f;
 
     if (mAnimationVariable > 1.0f)
     {
@@ -130,6 +129,7 @@ void QtHexagonalMenu::HexagonalMenuWidget::Update()
         const float rh = 0.3f * h;
         const float pw = w / 3.0f;
         const float ph = h / 3.0f;
+        pButton->MakeDarker(mChildLevel);
         pButton->setFixedSize(pw, ph);
         pButton->move(cx + rw * std::cos(-angle) - 0.5f * pw, cy + rh * std::sin(-angle) - 0.5f * ph);
         pButton->setVisible(true);
