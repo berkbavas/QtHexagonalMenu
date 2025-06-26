@@ -16,4 +16,4 @@ A hexagonal menu in Qt Framework.
 
 ## Video
 
-https://github.com/user-attachments/assets/9b669db7-734d-4cc3-b4c7-deb2225ac8bb
+https://github.com/user-attachments/assets/3d84d024-2940-4a45-82c2-cd9376ba7d09
