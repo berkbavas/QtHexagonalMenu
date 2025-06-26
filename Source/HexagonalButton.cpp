@@ -86,7 +86,7 @@ void HexagonalButton::OnPaint(QPaintEvent* pEvent)
 
     QColor fillColor = mHovered ? mFillColor.darker() : mFillColor;
 
-    fillColor.setAlpha(128 + 64 * mDarkFactor);
+    fillColor.setAlpha(qBound(0, 128 + 64 * mDarkFactor, 255));
     painter.setBrush(fillColor);
     painter.setPen(QPen(mContourColor, 2));
     painter.drawPolygon(mPolygon);
