@@ -114,39 +114,36 @@ void HexagonalMenuWidget::Update()
         mTimer.stop();
     }
 
-    float w = width();
-    float h = height();
-    float cx = 0.5f * w;
-    float cy = 0.5f * h;
+    const float w = width();
+    const float h = height();
+    const float cx = 0.5f * w;
+    const float cy = 0.5f * h;
 
     for (const auto& [index, pButton] : mButtons)
     {
-        float angle;
-        float rw;
-        float rh;
-        float pw;
-        float ph;
+        const float angle = M_PI / 6.0f + (index - mAnimationStartingIndex) * M_PI / 3.0f + mAnimationStartingIndex * M_PI / 3.0f;
+        const float rw = mAnimationVariable * 0.3f * w;
+        const float rh = mAnimationVariable * 0.3f * h;
+        const float pw = (w / 3.0f);
+        const float ph = (h / 3.0f);
+        float x = cx + rw * std::cos(-angle) - 0.5f * pw;
+        float y = cy + rh * std::sin(-angle) - 0.5f * ph;
 
-        if (mChildLevel == 0)
+        if (mChildLevel == 0) // Main menu
         {
-            angle = M_PI / 6.0f + (index - mAnimationStartingIndex) * M_PI / 3.0f + mAnimationStartingIndex * M_PI / 3.0f;
-            rw = mAnimationVariable * 0.3f * w;
-            rh = mAnimationVariable * 0.3f * h;
-            pw = (w / 3.0f);
-            ph = (h / 3.0f);
         }
-        else
+        else // Child menu
         {
-            angle = M_PI / 6.0f + mAnimationVariable * (index - mAnimationStartingIndex) * M_PI / 3.0f + mAnimationStartingIndex * M_PI / 3.0f;
-            rw = 0.3f * w;
-            rh = 0.3f * h;
-            pw = (w / 3.0f);
-            ph = (h / 3.0f);
+            if (index == mAnimationStartingIndex)
+            {
+                x = cx + (1 - mAnimationVariable) * rw * std::cos(-angle) - 0.5f * pw;
+                y = cy + (1 - mAnimationVariable) * rh * std::sin(-angle) - 0.5f * ph;
+            }
         }
 
         pButton->MakeDarker(mChildLevel);
         pButton->setFixedSize(pw, ph);
-        pButton->move(cx + rw * std::cos(-angle) - 0.5f * pw, cy + rh * std::sin(-angle) - 0.5f * ph);
+        pButton->move(x, y);
         pButton->setVisible(true);
     }
 }

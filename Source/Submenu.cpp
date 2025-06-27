@@ -45,25 +45,22 @@ void Submenu::AddButton(int index, const QString& label)
 void Submenu::AddSubmenu(int index, Submenu* pSubmenu)
 {
     mSubmenus[index] = pSubmenu;
-
     connect(pSubmenu, &Submenu::RequestHide, this, &Submenu::RequestHide);
 }
 
 bool Submenu::OnMouseReleased(const QPointF& point)
 {
-    if (!mHexagonalMenuWidget->OnMouseReleased(point))
-    {
-        for (const auto pSubmenu : mSubmenus)
-        {
-            if (pSubmenu->OnMouseReleased(point))
-            {
-                return true;
-            }
-        }
-    }
-    else
+    if (mHexagonalMenuWidget->OnMouseReleased(point))
     {
         return true;
+    }
+
+    for (const auto pSubmenu : mSubmenus)
+    {
+        if (pSubmenu->OnMouseReleased(point))
+        {
+            return true;
+        }
     }
 
     return false;
@@ -71,19 +68,17 @@ bool Submenu::OnMouseReleased(const QPointF& point)
 
 bool Submenu::OnMousePressed(const QPointF& point)
 {
-    if (!mHexagonalMenuWidget->OnMousePressed(point))
-    {
-        for (const auto pSubmenu : mSubmenus)
-        {
-            if (pSubmenu->OnMousePressed(point))
-            {
-                return true;
-            }
-        }
-    }
-    else
+    if (mHexagonalMenuWidget->OnMousePressed(point))
     {
         return true;
+    }
+
+    for (const auto pSubmenu : mSubmenus)
+    {
+        if (pSubmenu->OnMousePressed(point))
+        {
+            return true;
+        }
     }
 
     return false;
@@ -91,19 +86,18 @@ bool Submenu::OnMousePressed(const QPointF& point)
 
 bool Submenu::OnMouseMoved(const QPointF& point)
 {
-    if (!mHexagonalMenuWidget->OnMouseMoved(point))
-    {
-        for (const auto pSubmenu : mSubmenus)
-        {
-            if (pSubmenu->OnMouseMoved(point))
-            {
-                return true;
-            }
-        }
-    }
-    else
+
+    if (mHexagonalMenuWidget->OnMouseMoved(point))
     {
         return true;
+    }
+
+    for (const auto pSubmenu : mSubmenus)
+    {
+        if (pSubmenu->OnMouseMoved(point))
+        {
+            return true;
+        }
     }
 
     return false;

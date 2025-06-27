@@ -16,12 +16,14 @@ Menu::Menu(QWidget* pParent)
     pSubmenu0->AddButton(0, "Test 00");
     pSubmenu0->AddButton(1, "Test 01");
     pSubmenu0->AddButton(2, "Test 02");
+    pSubmenu0->AddButton(3, "Test 03");
     pSubmenu0->AddButton(4, "Test 04");
     pSubmenu0->AddButton(5, "Test 05");
 
     Submenu* pSubmenu05 = new Submenu(mParent, 5);
     pSubmenu05->AddButton(0, "Test 050");
     pSubmenu05->AddButton(1, "Test 051");
+    pSubmenu05->AddButton(2, "Test 052");
     pSubmenu05->AddButton(3, "Test 053");
     pSubmenu05->AddButton(4, "Test 054");
     pSubmenu05->AddButton(5, "Test 055");
@@ -33,6 +35,7 @@ Menu::Menu(QWidget* pParent)
     pSubmenu1->AddButton(1, "Test 11");
     pSubmenu1->AddButton(2, "Test 12");
     pSubmenu1->AddButton(3, "Test 13");
+    pSubmenu1->AddButton(4, "Test 14");
     pSubmenu1->AddButton(5, "Test 15");
 
     Submenu* pSubmenu2 = new Submenu(mParent, 2);
@@ -41,6 +44,7 @@ Menu::Menu(QWidget* pParent)
     pSubmenu2->AddButton(2, "Test 22");
     pSubmenu2->AddButton(3, "Test 23");
     pSubmenu2->AddButton(4, "Test 24");
+    pSubmenu2->AddButton(5, "Test 25");
 
     Submenu* pSubmenu3 = new Submenu(mParent, 3);
     pSubmenu3->AddButton(1, "Test 31");
@@ -49,10 +53,18 @@ Menu::Menu(QWidget* pParent)
     pSubmenu3->AddButton(4, "Test 34");
     pSubmenu3->AddButton(5, "Test 35");
 
+    Submenu* pSubmenu4 = new Submenu(mParent, 4);
+    pSubmenu4->AddButton(0, "Test 40");
+    pSubmenu4->AddButton(2, "Test 42");
+    pSubmenu4->AddButton(3, "Test 43");
+    pSubmenu4->AddButton(4, "Test 44");
+    pSubmenu4->AddButton(5, "Test 45");
+
     mMainMenu->AddSubmenu(0, pSubmenu0);
     mMainMenu->AddSubmenu(1, pSubmenu1);
     mMainMenu->AddSubmenu(2, pSubmenu2);
     mMainMenu->AddSubmenu(3, pSubmenu3);
+    mMainMenu->AddSubmenu(4, pSubmenu4);
 
     connect(mMainMenu, &Submenu::RequestHide, this, &Menu::Hide);
 
