@@ -104,6 +104,16 @@ void HexagonalMenuWidget::SetChildLevel(int level)
     mChildLevel = level;
 }
 
+void HexagonalMenuWidget::SetSelectedIndex(int index)
+{
+    mSelectedIndex = index;
+
+    for (const auto& [index, pButton] : mButtons)
+    {
+        pButton->SetSelected(index == mSelectedIndex);
+    }
+}
+
 void HexagonalMenuWidget::Update()
 {
     mAnimationVariable += 0.035f;
@@ -141,6 +151,7 @@ void HexagonalMenuWidget::Update()
             }
         }
 
+        pButton->SetSelected(index == mSelectedIndex);
         pButton->MakeDarker(mChildLevel);
         pButton->setFixedSize(pw, ph);
         pButton->move(x, y);

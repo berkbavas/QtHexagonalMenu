@@ -27,13 +27,20 @@ void Submenu::SetChildLevel(int level)
     }
 }
 
+void Submenu::SetSelectedIndex(int index)
+{
+    mHexagonalMenuWidget->SetSelectedIndex(index);
+}
+
 void Submenu::Hide()
 {
     for (const auto pSubmenu : mSubmenus)
     {
+        pSubmenu->SetSelectedIndex(-1);
         pSubmenu->Hide();
     }
 
+    mHexagonalMenuWidget->SetSelectedIndex(-1);
     mHexagonalMenuWidget->Hide();
 }
 
@@ -118,8 +125,11 @@ void Submenu::HandleButtonClick(int index)
 
 void Submenu::ShowChild(int index)
 {
+    mHexagonalMenuWidget->SetSelectedIndex(-1);
+
     for (const auto pSubmenu : mSubmenus)
     {
+        pSubmenu->SetSelectedIndex(-1);
         pSubmenu->Hide();
     }
 
@@ -129,6 +139,8 @@ void Submenu::ShowChild(int index)
     const auto r = 0.6f * mHexagonalMenuWidget->width();
     const auto animationStartingIndex = (index + 3) % 6;
     const auto position = center + r * QPointF(std::cos(-angle), std::sin(-angle));
+
+    mHexagonalMenuWidget->SetSelectedIndex(index);
 
     pChild->Show(position.x(), position.y());
 }

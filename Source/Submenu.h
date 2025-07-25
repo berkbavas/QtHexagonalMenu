@@ -25,6 +25,7 @@ class Submenu : public QObject
     void AddSubmenu(int index, Submenu* pSubmenu);
 
     void SetChildLevel(int level);
+    void SetSelectedIndex(int index);
 
   signals:
     void ButtonClicked(int index);

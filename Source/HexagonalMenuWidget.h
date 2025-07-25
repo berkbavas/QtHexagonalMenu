@@ -24,6 +24,7 @@ class HexagonalMenuWidget : public QWidget
     QPointF GetCenter() const;
 
     void SetChildLevel(int level);
+    void SetSelectedIndex(int index);
 
   signals:
     void ButtonClicked(int index);
@@ -37,4 +38,5 @@ class HexagonalMenuWidget : public QWidget
     int mAnimationStartingIndex;
     float mAnimationVariable{ 0.0f }; // [0,1]
     int mChildLevel{ 0 };
+    int mSelectedIndex{ -1 };
 };

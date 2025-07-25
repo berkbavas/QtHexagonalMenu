@@ -76,6 +76,11 @@ void HexagonalButton::MakeDarker(int factor)
     mDarkFactor = factor;
 }
 
+void HexagonalButton::SetSelected(bool selected)
+{
+    mSelected = selected;
+}
+
 void HexagonalButton::OnPaint(QPaintEvent* pEvent)
 {
     const auto w = width();
@@ -84,11 +89,26 @@ void HexagonalButton::OnPaint(QPaintEvent* pEvent)
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
-    QColor fillColor = mHovered ? mFillColor.darker() : mFillColor;
+    mFillColor.setAlpha(qBound(0, 128 + 64 * mDarkFactor, 255));
 
-    fillColor.setAlpha(qBound(0, 128 + 64 * mDarkFactor, 255));
-    painter.setBrush(fillColor);
-    painter.setPen(QPen(mContourColor, 2));
+    if (mHovered)
+    {
+        painter.setBrush(mFillColor.darker());
+    }
+    else
+    {
+        painter.setBrush(mFillColor);
+    }
+
+    if (mSelected)
+    {
+        painter.setPen(QPen(mSelectedColor, 2));
+    }
+    else
+    {
+        painter.setPen(QPen(mContourColor, 2));
+    }
+
     painter.drawPolygon(mPolygon);
 
     painter.setPen(mTextColor);

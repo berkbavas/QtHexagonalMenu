@@ -19,6 +19,7 @@ class HexagonalButton : public QWidget
 
     void SetLabel(const QString& label);
     void MakeDarker(int factor);
+    void SetSelected(bool selected);
 
   signals:
     void Clicked();
@@ -34,10 +35,12 @@ class HexagonalButton : public QWidget
     QColor mTextColor{ 255, 255, 255 };
     QColor mContourColor{ 32, 32, 32 };
     QColor mFillColor{ 64, 64, 64 };
+    QColor mSelectedColor{ 0, 196, 0 };
 
     bool mHovered{ false };
     bool mPressed{ false };
     int mDarkFactor{ 0 };
+    bool mSelected{ false };
 
     static constexpr float SCALING{ 0.9 };
 };
